@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="卡纸的个人网络名片 - Minecraft Mod开发者、网易大神管理员、OC创作者。分享关于编程、创作与热爱的角落。">
+    <meta name="keywords" content="卡纸,Minecraft,Forge Mod开发,网易大神,OC形象,Java,C语言,个人网站">
+    <meta name="author" content="卡纸">
+    <meta name="robots" content="index, follow">
+    <title>卡纸的日暮咖啡厅 | 个人网络名片</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fffcf0;  /* 柔和米白底 */
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            color: #2c2b26;
+            scroll-behavior: smooth;
+            line-height: 1.5;
+        }
+
+        /* 主题色变量 */
+        :root {
+            --primary-yellow: #f9f4b4;
+            --primary-pink: #ff89bb;
+            --pink-dark: #e06c9e;
+            --text-dark: #2e2c2a;
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.03), 0 2px 6px rgba(0, 0, 0, 0.05);
+            --border-radius: 1.5rem;
+        }
+
+        /* 固定导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 252, 240, 0.92);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem 1.5rem;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid rgba(255, 137, 187, 0.2);
+            flex-wrap: wrap;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #4a3b38;
+            font-size: 1.1rem;
+            padding: 0.3rem 0;
+            transition: all 0.2s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .navbar a:hover {
+            color: var(--pink-dark);
+            border-bottom-color: var(--primary-pink);
+        }
+
+        /* 主要内容容器 */
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 5rem 1.5rem 3rem;
+        }
+
+        section {
+            scroll-margin-top: 5rem;
+            margin-bottom: 5rem;
+        }
+
+        /* 首页卡片组件样式 */
+        .home-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .widgets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s;
+            border: 1px solid #fff0e0;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: #e06c9e;
+            border-left: 4px solid var(--primary-pink);
+            padding-left: 0.75rem;
+        }
+
+        .stamp {
+            font-size: 0.8rem;
+            font-weight: 200;
+            margin-top: 10rem;
+            color: #2c2b26;
+            text-align: right;
+        }
+
+        .clock {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #2c2b26;
+        }
+
+        .date {
+            font-size: 1rem;
+            color: #6b625c;
+            margin-top: 0.25rem;
+        }
+
+        .countdown-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #ffe0cc;
+        }
+
+        .countdown-label {
+            font-weight: 600;
+            color: #ff89bb;
+        }
+
+        .countdown-time {
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin-top: 0.3rem;
+        }
+
+        .quote-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            font-style: italic;
+            background: #fef5e7;
+            padding: 1rem;
+            border-radius: 1.2rem;
+            color: #4d3a33;
+        }
+
+        .quote-author {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #b38b7a;
+        }
+
+        .btn-refresh {
+            background: var(--primary-yellow);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            align-self: flex-start;
+            color: #8b5a4b;
+        }
+
+        .btn-refresh:hover {
+            background: #ffe2a4;
+        }
+
+        /* 关于我卡片切换 */
+        .about-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #fff0e2;
+        }
+
+        .about-card:hover {
+            border-color: #ffcddf;
+        }
+
+        .about-intro, .about-detail {
+            transition: 0.1s;
+        }
+
+        .about-detail {
+            display: none;
+        }
+
+        .switch-hint {
+            font-size: 0.8rem;
+            color: #ff89bb;
+            margin-top: 1rem;
+            text-align: right;
+            opacity: 0.7;
+        }
+
+        /* 水平滚动作品集 */
+        .works-scroll {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            padding-bottom: 1rem;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .works-container {
+            display: inline-flex;
+            gap: 1.8rem;
+            padding: 0.5rem 0.2rem 1rem;
+        }
+
+        .work-card {
+            white-space: normal;
+            background: white;
+            width: 280px;
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            transition: all 0.25s;
+            flex-shrink: 0;
+            border: 1px solid #fbe5d4;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .work-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-pink);
+        }
+
+        .work-icon {
+            font-size: 2.8rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .work-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #d4618f;
+        }
+
+        .work-desc {
+            font-size: 0.9rem;
+            color: #5f534c;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .work-link {
+            display: inline-block;
+            background: var(--primary-yellow);
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            color: #4e3a31;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        .work-link:hover {
+            background: #ffdc9a;
+        }
+
+        /* 联系方式区域 */
+        .contact-links {
+            background: #fff8ed;
+            border-radius: 2rem;
+            padding: 1.8rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .contact-links h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #ff89bb;
+        }
+
+        .links-group {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .links-group a {
+            text-decoration: none;
+            color: #4e3a31;
+            font-weight: 500;
+            background: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 3rem;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            border: 1px solid #ffddc4;
+        }
+
+        .links-group a:hover {
+            background: var(--primary-yellow);
+            color: #c15483;
+            border-color: var(--primary-pink);
+        }
+
+        .links-raw:link {
+            color: #c15483;
+        }
+        .links-raw:visited {
+            color: #4e3a31;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #a29086;
+            padding: 2rem 0 2rem;
+            border-top: 1px solid #ffe0cf;
+            margin-top: 1rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 640px) {
+            main {
+                padding: 4rem 1rem 2rem;
+            }
+            .navbar {
+                gap: 1.2rem;
+                padding: 0.8rem 1rem;
+            }
+            .navbar a {
+                font-size: 1rem;
+            }
+            .stamp {
+                font-size: 0.4rem;
+            }
+            .clock {
+                font-size: 1.6rem;
+            }
+            .countdown-time {
+                font-size: 1.2rem;
+            }
+            .work-card {
+                width: 260px;
+            }
+        }
+
+        /* 随机点缀 */
+        .highlight-pink {
+            color: var(--primary-pink);
+        }
+        hr {
+            margin: 0.5rem 0;
+            border-color: #ffe6d5;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar">
+    <a href="#home">首页</a>
+    <a href="#about">关于我</a>
+    <a href="#works">小作品集</a>
+</nav>
+
+<main>
+    <!-- 首页区块 小组件 -->
+    <section id="home">
+        <div class="home-grid">
+            <div class="widgets">
+                <!-- 时钟卡片 -->
+                <div class="card">
+                    <h3>此刻时光</h3>
+                    <div class="clock" id="liveClock">--:--:--</div>
+                    <div class="date" id="liveDate">----年--月--日</div>
+                    <div class="stamp" id="liveStamp">TIMESTAMP ----------</div>
+                </div>
+                <!-- 倒计时卡片：距假期结束 + 自定义事件 -->
+                <div class="card">
+                    <h3>重要倒计时</h3>
+                    <div class="countdown-item">
+                        <div class="countdown-label">法定节假日</div>
+                        <div class="countdown-time" id="holidayCountdown">计算中...</div>
+                        <div class="holiday-name" id="holidayName" style="font-size:0.8rem; color:#b38b7a;"></div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-label">我的生日</div>
+                        <div class="countdown-time" id="customEventCountdown">计算中...</div>
+                        <div class="custom-event-name" id="customEventLabel" style="font-size:0.8rem; color:#b38b7a;">距 生日</div>
+                    </div>
+                </div>
+                <!-- 随机名言/答案之书卡片 -->
+                <div class="card">
+                    <h3>一言</h3>
+                    <div class="quote-area">
+                        <div class="quote-text" id="randomQuote">“既然别人说自己活着会为他带来悲惨...那我可不更得好好活着？”</div>
+                        <div class="quote-author" id="quoteAuthor">—— 低迷的卡纸</div>
+                        <button class="btn-refresh" id="refreshQuoteBtn">换一换</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我区块 单击切换一句话/详细信息 -->
+    <section id="about">
+        <div class="about-card" id="aboutCard">
+            <div class="about-intro" id="aboutIntro">
+                <p style="font-size:1.2rem; font-weight:500;">嗨，我是 <span class="highlight-pink">卡纸</span> ——<br>
+                是一个热爱着Minecraft并在努力成长的Coder(猫猫探头)<br>
+                网易大神管理员 | Minecraft Modding新手 | 大一</p>
+                <div class="switch-hint">查看更多 ↓</div>
+            </div>
+            <div class="about-detail" id="aboutDetail">
+                <p><strong>关于「卡纸」</strong><br>
+                她是一只黄毛猫猫(不是猫娘，没有尾巴(但是耳朵捏起来很舒服(不要乱捏)))，有着左灰右粉的异色瞳<br>
+                拥有完整的OC体系，并有亲友贺图及文章介绍（可于作品集中查看）。<br><br>
+
+                <strong>关于「数据」</strong><br>
+                生日：1月20日 | 星座：水瓶座<br>
+                MBTI：ENFP | 关键词：Limited Infinity<br>
+                在玩端游：Minecraft<br>
+                在玩手游：蔚蓝档案 嘟嘟脸恶作剧<br>
+                <s>XP</s> 喜欢的剧情：普通且有趣的日常<br><br>
+
+                <strong>关于「长处」</strong><br>
+                • Minecraft Forge Mod 开发 (Java)<br>
+                • 在校内系统学习C语言 / 数据结构 (大一在读)<br>
+                • 在校外自学Java，正在努力成长<br>
+                • 担任网易大神平台 Minecraft 官方频道管理员<br>
+                • <s>Minecraft的指令大神、资源包大神、画皮肤大神、红石大神、建筑大神、跑酷大神、PVP大神......</s><sub>(心虚)</sub><br><br>
+
+                <strong>关于「偏好」</strong><br>
+                • 能靠代码自动完成绝不手动操作。<br>
+                • 喜欢创作角色，亲手描绘笔下人物的故事。<br>
+                • 写代码全靠灵感，有想法就会去做。<br>
+                • 向我提问之前必须绝对一定要使用5W1H提问法！！<br><br>
+
+                <strong>关于「我」</strong><br>
+                无论变成什么样，我会一直是我<br>
+                bilibili@卡纸跟你爆了 网易大神@卡纸大魔王 | 日积跬步<br>
+                </p>
+                <div class="switch-hint">收起 ↑</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 小作品集 水平滚动 -->
+    <section id="works">
+        <h2 style="margin-bottom: 1rem; font-size:1.8rem; color:#d4618f;">我的作品</h2>
+        <div class="works-scroll">
+            <div class="works-container">
+                <!-- PaperChat -->
+                <div class="work-card">
+                    <div class="work-title">PaperChat<br> · Forge Mod</div>
+                    <div class="work-desc">爆改Minecraft的聊天系统。你想要的，这里都有。</div>
+                    <a href="https://kazhi.lanzoue.com/iwInH3lcp7wb" class="work-link" id="link1" target="_blank">Mod下载 (密码:ehgy)</a>
+                </div>
+                <!-- InfinityShell  -->
+                <div class="work-card">
+                    <div class="work-title">InfinityShell<br> · 人设世界观</div>
+                    <div class="work-desc">卡纸在这里经历了成长与决策...<br>&nbsp;</div>
+                    <a href="https://www.bilibili.com/opus/1044245371633532932" class="work-link" id="link2" target="_blank">浏览设定文档</a>
+                </div>
+                <!-- VideoDPTool  -->
+                <div class="work-card">
+                    <div class="work-title">VideoDPTool<br> · Java小工具</div>
+                    <div class="work-desc">在Minecraft中播放视频的一个神奇途径</div>
+                    <a href="https://pan.baidu.com/s/1ne9lTB3O6LCSlgdvj22-Cw?pwd=vddp" class="work-link" id="link3" target="_blank">工具下载 (密码:vddp)</a>
+                </div>
+                <!-- ImageTXTool  -->
+                <div class="work-card">
+                    <div class="work-title">ImageTXTool<br> · Java小工具</div>
+                    <div class="work-desc">快速将图片转换为Minecraft中可用的原始文本</div>
+                    <a href="https://kazhi.lanzoue.com/iRfU23lcpq6j" class="work-link" id="link4" target="_blank">工具下载 (密码:b43w)</a>
+                </div>
+                <!-- 焦糖SaMa  -->
+                <div class="work-card">
+                    <div class="work-title">焦糖SaMa<br> · QQ机器人</div>
+                    <div class="work-desc">提供了小游戏、Minecraft工具、日常工具的神奇Bot</div>
+                    <a href="https://qun.qq.com/qunpro/robot/qunshare?robot_uin=3889020244" class="work-link" id="link5" target="_blank">邀请到群聊</a>
+                </div>
+                <!-- 桌面音量条  -->
+                <div class="work-card">
+                    <div class="work-title">桌面音量条<br> · Windows美化</div>
+                    <div class="work-desc">在桌面添加两个随系统声音变化的音量条</div>
+                    <a href="https://kazhi.lanzoue.com/i6peK3lcqzfi" class="work-link" id="link5" target="_blank">工具下载 (密码:7gv9)</a>
+                </div>
+            </div>
+        </div>
+        <p style="font-size:0.8rem; text-align:right; margin-top:0.5rem; color:#bfa18f;">&lt;&lt;&lt; 左右滚动查看更多 &gt;&gt;&gt;</p>
+    </section>
+
+    <!-- 联系方式区块 -->
+    <div class="contact-links">
+        <h3>联系卡纸</h3>
+        <div class="links-group">
+            <a href="mailto:3427788719@qq.com" target="_blank">QQ邮箱</a>
+            <a href="https://space.bilibili.com/306327263" target="_blank" id="biliLink">bilibili 主页</a>
+            <a href="https://ds.163.com/user/82707f7f3a1e4ee2922eb416f2aa694d/" target="_blank" id="neteaseLink">网易大神主页</a>
+        </div>
+        <p style="margin-top: 1rem; font-size:0.8rem;">欢迎交流 Mod 开发 / OC 创作 / 社区反馈</p>
+    </div>
+    <footer>
+        <p>© 2025 卡纸的日暮咖啡厅 · <a href="kazhi.cafe" class="links-raw">kazhi.cafe</a> | 个人名片 | 少女成长中...</p>
+    </footer>
+</main>
+
+<script>
+    // ----------------------------- 工具函数 ---------------------------------
+    // 倒计时通用格式化
+    function formatTimeRemaining(ms) {
+        ms = ms + 86400000;
+        if (ms <= 0) return "已经到来！";
+        const totalSeconds = Math.floor(ms / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return `${days}天 ${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+    }
+
+    // 获取中国法定假期列表 (结束日期 当天 23:59:59)
+    // 从 timor.tech API 获取指定年份的所有节假日（返回数组，包含日期和名称）
+    async function fetchHolidaysFromAPI(year) {
+        try {
+            const response = await fetch(`https://timor.tech/api/holiday/year/${year}`);
+            const data = await response.json();
+            if (data.code === 0 && data.holiday) {
+                // 接口返回格式示例：{ code:0, holiday: { "2026-01-01": { holiday: true, name: "元旦" }, ... } }
+                const holidays = [];
+                for (const [date, info] of Object.entries(data.holiday)) {
+                    if (info.holiday) { // 仅提取法定节假日
+                        holidays.push({ date: new Date(new Date().getFullYear().toString() + "-" + date + "T00:00:00"), name: info.name });
+                    }
+                }
+                return holidays;
+            }
+            throw new Error("API 返回数据异常");
+        } catch (err) {
+            console.error("获取节假日数据失败，使用备用数据", err);
+            return getFallbackHolidays(year); // 降级方案：本地硬编码
+        }
+    }
+    // 为了稳定，我们定义2025-2026年的假期 (可扩展)
+    function getFallbackHolidays(year) {
+        // 原硬编码列表（已自动适配年份）
+        const holidaysMap = [
+            { name: "元旦", month: 1, day: 1 },
+            { name: "春节", month: 2, day: 17 },  // 示例，实际需根据年份调整
+            { name: "清明", month: 4, day: 6 },
+            { name: "劳动", month: 5, day: 3 },
+            { name: "端午", month: 6, day: 21 },
+            { name: "中秋 & 国庆", month: 10, day: 8 }
+        ];
+        return holidaysMap.map(h => ({
+            date: new Date(year, h.month - 1, h.day, 23, 59, 59),
+            name: h.name
+        }));
+    }
+
+    function getCurrentOrNextHolidayInfo(holidaysList) {
+        const now = new Date();
+        // 按日期排序
+        const sorted = holidaysList.slice().sort((a, b) => a.date - b.date);
+        
+        // 合并连续天数为假期段
+        const holidaySegments = [];
+        let i = 0;
+        while (i < sorted.length) {
+            let start = sorted[i].date.valueOf();
+            let end = start;
+            let name = sorted[i].name;
+            // 收集连续天数
+            while (i + 1 < sorted.length && 
+                sorted[i+1].date.valueOf() === end + 86400000) {
+                end += 86400000;
+                i++;
+                // 假期名称合并（可选，避免过长）
+                if (sorted[i].name !== name) name = `${name} & ${sorted[i].name}`;
+            }
+            end += 86399999;
+            holidaySegments.push({ start, end, name });
+            i++;
+        }
+        
+        // 检查当前是否在某个假期段内
+        for (let seg of holidaySegments) {
+            if (now.valueOf() >= seg.start && now.valueOf() <= seg.end + 86400000) {
+                return { status: 'ongoing', start: seg.start, end: seg.end, name: seg.name };
+            }
+        }
+        
+        // 找下一个即将开始的假期段
+        let nextSegment = null;
+        for (let seg of holidaySegments) {
+            if (seg.start > now.valueOf()) {
+                if (!nextSegment || seg.start < nextSegment.start) {
+                    nextSegment = seg;
+                }
+            }
+        }
+        if (nextSegment) {
+            return { status: 'upcoming', start: nextSegment.start, end: nextSegment.end, name: nextSegment.name };
+        }
+        
+        // 若无未来假期，则取明年的第一个（避免空白）
+        if (holidaySegments.length > 0) {
+            const firstNextYear = holidaySegments[0];
+            // 将年份调整到下一年（假设API已包含下一年数据，否则需重新获取）
+            const nextYearStart = new Date(firstNextYear.start);
+            nextYearStart.setFullYear(nextYearStart.getFullYear() + 1);
+            const nextYearEnd = new Date(firstNextYear.end);
+            nextYearEnd.setFullYear(nextYearEnd.getFullYear() + 1);
+            return { status: 'upcoming', start: nextYearStart, end: nextYearEnd, name: firstNextYear.name };
+        }
+        return null;
+    }
+
+    let cachedHolidays = null; // 缓存全年假期数据
+
+    async function updateCountdowns() {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const nextYear = currentYear + 1;
+
+        if (!cachedHolidays) {
+            const thisYearHolidays = await fetchHolidaysFromAPI(currentYear);
+            const nextYearHolidays = await fetchHolidaysFromAPI(nextYear);
+            cachedHolidays = [...thisYearHolidays, ...nextYearHolidays];
+        }
+        
+        const holidayInfo = getCurrentOrNextHolidayInfo(cachedHolidays);
+        if (holidayInfo) {
+            if (holidayInfo.status === 'ongoing') {
+                const remainingMs = holidayInfo.end - now.valueOf();
+                document.getElementById("holidayCountdown").innerText = formatTimeRemaining(remainingMs);
+                document.getElementById("holidayName").innerHTML = `${holidayInfo.name} 进行中 · 剩余时间`;
+            } else {
+                const remainingMs = holidayInfo.start - now.valueOf();
+                document.getElementById("holidayCountdown").innerText = formatTimeRemaining(remainingMs);
+                document.getElementById("holidayName").innerHTML = `距 ${holidayInfo.name} 开始`;
+            }
+        } else {
+            document.getElementById("holidayCountdown").innerText = "暂无假期信息";
+            document.getElementById("holidayName").innerHTML = "";
+        }
+
+        // 自定义事件倒计时（保持不变）
+        const customEventName = "生日";
+        birthdayYear = currentYear.toString();
+        customEventDate = new Date(birthdayYear + "-01-20T00:00:00");
+        customRemainingMs = customEventDate - now;
+        if (customRemainingMs < -86400000){
+            birthdayYear = (Number.parseInt(currentYear.toFixed()) + 1).toString();
+            customEventDate = new Date(birthdayYear + "-01-20T00:00:00");
+            customRemainingMs = customEventDate - now;
+        }
+        
+        document.getElementById("customEventCountdown").innerText = formatTimeRemaining(customRemainingMs);
+        document.getElementById("customEventLabel").innerHTML = birthdayYear + ` ${customEventName}`;
+    }
+
+
+    // 时钟实时刷新
+    function updateClock() {
+        const now = new Date();
+        const stamp = Math.floor(now.getTime() / 1000).toString();
+        document.getElementById("liveStamp").innerText = `Timestamp ${stamp}`;
+        const hours = now.getHours().toString().padStart(2,'0');
+        const minutes = now.getMinutes().toString().padStart(2,'0');
+        const seconds = now.getSeconds().toString().padStart(2,'0');
+        document.getElementById("liveClock").innerText = `${hours}:${minutes}:${seconds}`;
+        const year = now.getFullYear();
+        const month = (now.getMonth()+1).toString().padStart(2,'0');
+        const day = now.getDate().toString().padStart(2,'0');
+        const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+        const weekday = weekdays[now.getDay()];
+        document.getElementById("liveDate").innerHTML = `${year}年${month}月${day}日 ${weekday}`;
+    }
+    
+
+
+
+    const quotesLibrary = [
+        { text: "既然别人说自己活着会为他带来悲惨...那我可不更得好好活着？", author: "卡纸" },
+        { text: "即使您被我们封号了，也仍可享受免费的收广告服务", author: "Cl*ude" },
+        { text: "要开始了呦~", author: "迪拉熊" },
+        { text: "早~", author: "一般路过叉" },
+        { text: "世界上最遥远的距离，不是生与死，而是我在if里，你在else里。", author: "幻影_冰川下车" },
+        { text: "x-=-1", author: "卡纸" },
+        { text: "为什么这个∫符号长的这么像撬棍？", author: "卡纸" },
+        { text: "!?2147483648?!", author: "卡纸" },
+        { text: "0.1+0.2≠0.3", author: "IEEE 754" },
+        { text: "Anit DDoS! 0$/Month! 127.0.0.1!", author: "卡纸" },
+        { text: "3.1415926535897932384626433832795028...", author: "卡纸" },
+        { text: "Reflect连接大脑，ASM代替思考", author: "卡纸" },
+        { text: "Can you send me 30000$?", author: "卡纸" },
+        { text: "Potassium!", author: "Q5U4EX7YY2E9N" },
+        { text: "这到底我滴妈是什么鬼东西我的妈啊我妈这到底是什么鬼东西我的妈我这是怎么什么我的天", author: "Tenna" },
+        { text: "Determination.", author: "卡纸" },
+        { text: "φ", author: "自信音游人" },
+        { text: "YOUR TAKING TOO LONG!", author: "Jackenstein" },
+        { text: "锟斤拷锟斤拷锟斤拷烫烫烫烫烫烫烫烫", author: "GBK18030" },
+        { text: "Your computer has been trashed by the MEMZ Trojan. Now enjoy the Nyan Cat...", author: "MEMZ" },
+        { text: "2112112", author: "Ashrount vs. 打打だいず" },
+        { text: "飞龙一般的", author: "Tairitsu" },
+        { text: "星际 干涉 融解 轮回 邂逅 再生 摇篮曲 幻想 交错 观测 证明 流转 晕眩", author: "TAKIO feat. つぐ" },
+        { text: "X X XXX!", author: "REDALiCE × t+pazolite" },
+        { text: "execute run execute run execute run execute ...", author: "卡纸" },
+        { text: "让我看看是谁写递归不加退出条件！", author: "卡纸" },
+        { text: "现在我需要进入天空之城", author: "wds0 Dan" },
+        { text: "JavaScript大炮正在启动xxxxxxx", author: "卡纸" },
+        { text: "不行，现在还不能笑！", author: "基拉" },
+        { text: "BUILD FAILED in 8h37m13s", author: "卡纸" },
+        { text: "BUILD SUCCESSED in 278ms", author: "卡纸" },
+        { text: "你是否在雪山救过一只橘猫？", author: "卡纸" },
+        { text: "1-2=4294967295", author: "卡纸" },
+        { text: "一位测试工程师走进一家酒吧", author: "卡纸" },
+        { text: "一位测试工程师前来买瓜", author: "卡纸" },
+        { text: "java.lang.IndexOutOfBoundException", author: "卡纸" },
+        { text: "I/O操作千万别放主线程！", author: "卡纸" },
+        { text: "到此一游---", author: "卡纸" },
+        { text: "好热~热的快要被晒干了，就算一动不动也好热啊", author: "小鸟游 星野" },
+        { text: "会赢的", author: "卡纸" },
+        { text: "Tell me your secret.", author: "Halv" },
+        { text: "每天成长一点点", author: "卡纸" },
+        { text: "大自然的馈赠！", author: "卡纸" },
+        { text: "永生其实是一种诅咒", author: "卡纸" },
+        { text: "Troubleshooting any problem without the error log is like driving with your eyes closed.", author: "Apache Docs § Getting Started" },
+        { text: "/* 你看不到我 */", author: "卡纸" },
+        { text: "涂蜡的斑驳切制铜楼梯", author: "Mojang" },
+        { text: "*Rimshot*", author: "卡纸" },
+        { text: "404 Not Found | nginx", author: "卡纸" },
+        { text: "CSS(Counter Strike Source)", author: "卡纸" },
+        { text: "在你眼里也许只是微不足道的一隅，但在我眼里这就是全世界", author: "卡纸" },
+        { text: "<div><div><div><div><div></div></div></div></div></div>", author: "卡纸" },
+        { text: "看广告是福", author: "卡纸" },
+        { text: "101.0000% SSS+", author: "卡纸" },
+        { text: "程序员最讨厌康熙的哪个儿子？胤禩。因为他是八阿哥（bug）", author: "幻影_冰川下车" },
+        { text: "一个对象走进酒吧... 酒保：“我们不服务你这种类型。” 对象：“没事，我自己new一个。", author: "幻影_冰川下车" },
+        { text: "(Until) It's over.", author: "J S&B" },
+        { text: "回应了你的消息：/续标识", author: "卡纸" },
+        { text: "是stdio不是studio", author: "卡纸" },
+        { text: "到底是谁在写这些一言", author: "卡纸" },
+        { text: "Powered by DeepSeek.", author: "卡纸" },
+        { text: "你说话带喵？好可爱喵！", author: "卡纸" },
+        { text: "啊🤪~啊🤪~啊咦😬啊咦😬啊→啊↑啊↓😨啊😰~嗯💥哎哎🤗哎哦哎嗯😋~哦哎🥳爱爱爱爱爱😍啊🤪~啊🤪~啊咦😬啊咦😬啊→啊↑啊↓😨啊😰~嗯💥嗯嗯👿滴嘚滴嘚😈唔😱嘟⬅️嘟↖️嘟⬆️嘟↗️嘟➡️嘟↘️嘟⬇️", author: "PRASTIK DANCEFLOOR" },
+        { text: "Ciallo～(∠・ω< )⌒☆", author: "Yuzu-Soft" },
+        { text: "❁sora", author: "❁sora" },
+        { text: "Design🐜.", author: "Designant." },
+        { text: "👋👽🖐️ 你已急哭", author: "卡纸" },
+        { text: "📘📘📘📘📘 📘📘📘📘📒", author: "ブルーアーカイブ" },
+        { text: "█>==SAKUZYO BEAM====", author: "Sakuzyo" },
+        { text: "→↓↑→ →↓→→ ↑↑↓↓ ←→←→", author: "うたたP" },
+        { text: "!!! !! !! !!!!!!!!", author: "Team Grimoire" },
+        { text: "心理委员😡！我乳糖不耐受🤮！", author: "卡纸" },
+        { text: "ᕕ(◠ڼ◠)ᕗ​", author: "卡纸" },
+        { text: "吾即是吾。吾是存在本身。是阿拉法，也是俄梅戛。是汝所思所想。吾是...... 吾是自有永有的。除此之外，无从解释。", author: "ΔεχαΓραμματον" },
+        { text: "你是，基拉，对吧？", author: "L" },
+        { text: "⚡我就给你电，给你很多很多的电⚡", author: "电击小子" },
+        { text: "It's behind you", author: "s-don" },
+        { text: "疯狂星期四vivo50", author: "黎子不喜欢栗子" },
+        { text: "Daisuke⭐ (快把浴霸关上！)", author: "Y&Co." },
+        { text: "别笑，你也过不了第二关", author: "Frost_霜" },
+        { text: "oi，老登给我爆点米", author: "黎子不喜欢栗子" },
+        { text: "为什么要演奏春日影？！！", author: "长崎爽世" },
+        { text: "你这家伙到底在说些什么", author: "黎子不喜欢栗子" },
+        { text: "压制，手法，绝境，突破，自我，证明，巅峰，枷锁", author: "Frost_霜" },
+        { text: "控制！呼吸变成手动档！", author: "黎子不喜欢栗子" },
+        { text: "听好了！韵律早八点！准时放送！", author: "韵律源点Arcaea" },
+        { text: "您", author: "卡纸" },
+        { text: "ps太好用了你知道吗", author: "黎子不喜欢栗子" },
+        { text: "awmc", author: "卡纸" },
+        { text: "拉电线哈哈", author: "Frost_霜" },
+        { text: "我没有删库，是数据库自己想通了。", author: "幻影_冰川下车" },
+        { text: "空指针并非不存在，是存在抵达了不可名状的边界。", author: "幻影_冰川下车" },
+        { text: "缓存击穿的不是数据，是现实与虚拟的薄纱。", author: "幻影_冰川下车" },
+        { text: "哪里功夫高？(I'll be go for goal.)", author: "HARDCORE TANO*C" },
+        { text: "那我要又哭又闹了", author: "黎子不喜欢栗子" },
+        { text: "分布式共识失败，是烤金棍的火温不均，导致金层在节点间坍缩。", author: "幻影_冰川下车" },
+        { text: "你以为是乱码，其实是 UTF-8 对 GBK 的一次温柔越界。", author: "幻影_冰川下车" },
+        { text: "我把情绪写成 Base64，结果你只看到一串没有灵魂的字母。", author: "幻影_冰川下车" },
+        { text: "DABC ABCA ABCA DBAA", author: "USAO" },
+        { text: "10002221", author: "void (Mournfinale) feat.星熊南巫" }
+    ];
+    
+    let currentQuoteIndex = -1;
+    function getRandomQuote() {
+        let newIndex;
+        do { newIndex = Math.floor(Math.random() * quotesLibrary.length); } 
+        while (quotesLibrary.length > 1 && newIndex === currentQuoteIndex);
+        currentQuoteIndex = newIndex;
+        return quotesLibrary[currentQuoteIndex];
+    }
+    
+    function displayRandomQuote() {
+        const quote = getRandomQuote();
+        document.getElementById("randomQuote").innerHTML = `“${quote.text}”`;
+        document.getElementById("quoteAuthor").innerHTML = `—— ${quote.author}`;
+    }
+    
+    // 关于我 单击切换
+    const aboutCard = document.getElementById("aboutCard");
+    const introDiv = document.getElementById("aboutIntro");
+    const detailDiv = document.getElementById("aboutDetail");
+    function toggleAbout() {
+        if (introDiv.style.display === "none") {
+            introDiv.style.display = "block";
+            detailDiv.style.display = "none";
+        } else {
+            introDiv.style.display = "none";
+            detailDiv.style.display = "block";
+        }
+    }
+    // 初始化关于我显示状态 (只显示intro)
+    introDiv.style.display = "block";
+    detailDiv.style.display = "none";
+    aboutCard.addEventListener("click", toggleAbout);
+    
+    // 刷新名言按钮
+    document.getElementById("refreshQuoteBtn").addEventListener("click", displayRandomQuote);
+    
+    // 初始化所有定时器
+    async function initTimers() {
+        updateClock();
+        await updateCountdowns();          // 异步获取假期数据
+        setInterval(updateClock, 1000);
+        setInterval(async () => {
+            // 注意：这里依然调用 updateCountdowns，但由于 cachedHolidays 已存在，不会再请求 API
+            await updateCountdowns();
+        }, 1000);
+    }
+    
+    // 设置默认随机名言
+    displayRandomQuote();
+    initTimers();
+    
+    // 确保首页滚动偏移兼容
+    document.querySelectorAll('.navbar a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            if(targetElement) {
+                const offset = 70;
+                const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
+            }
+        });
+    });
+</script>
+</body>
+</html>
