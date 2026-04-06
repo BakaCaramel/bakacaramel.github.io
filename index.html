@@ -604,7 +604,6 @@
                 // 假期名称合并（可选，避免过长）
                 if (sorted[i].name !== name) name = `${name} & ${sorted[i].name}`;
             }
-            end += 86399999;
             holidaySegments.push({ start, end, name });
             i++;
         }
@@ -662,7 +661,7 @@
                 document.getElementById("holidayCountdown").innerText = formatTimeRemaining(remainingMs);
                 document.getElementById("holidayName").innerHTML = `${holidayInfo.name} 进行中 · 剩余时间`;
             } else {
-                const remainingMs = holidayInfo.start - now.valueOf();
+                const remainingMs = holidayInfo.start - now.valueOf() - 86400000;
                 document.getElementById("holidayCountdown").innerText = formatTimeRemaining(remainingMs);
                 document.getElementById("holidayName").innerHTML = `距 ${holidayInfo.name} 开始`;
             }
